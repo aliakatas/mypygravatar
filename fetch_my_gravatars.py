@@ -148,11 +148,24 @@ def download_multiple_gravatars(urls, email, save_dir="gravatars"):
 
 if __name__ == '__main__':
    try:
-      the_email = str(sys.argv[1])
-      size = int(sys.argv[2])
+      user_email = 'john.smith@example.com'
+      size = 180
+
+      if len(sys.argv) == 1:
+         print('No user input detected, using default values of ')
+      elif len(sys.argv) == 2:
+         print('Assuming default size')
+         user_email = str(sys.argv[1])
+      else:
+         print('Input provided')
+         user_email = str(sys.argv[1])
+         size = int(sys.argv[2])
+         
+      print(f'email: {user_email}')
+      print(f'size: {size}')
       
-      gravatar_urls = create_URLs_from_email(the_email, size)
-      downloaded_files = download_multiple_gravatars(gravatar_urls, the_email)
+      gravatar_urls = create_URLs_from_email(user_email, size)
+      downloaded_files = download_multiple_gravatars(gravatar_urls, user_email)
       print(f"\nDownloaded {len(downloaded_files)} images successfully")
 
    except Exception as e:
