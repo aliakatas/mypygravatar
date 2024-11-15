@@ -45,6 +45,12 @@ code .
     ```bash
     npm install -D tailwindcss postcss autoprefixer
     ```
+    Apparently, there is a potential vulnerability warning. The output recommends to run the following to fix:
+    ```bash
+    npm audit fix --force
+    ```
+    However, this will lead to a loop where more vulnerabilities are introduced with the attempted fix, and you will go back to square one if you run the command again (as it's recommended once more...). 
+    I'd say leave as is.
 
 3. **Initialize Tailwind** by generating a configuration file:
     ```bash
