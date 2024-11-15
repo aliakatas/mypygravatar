@@ -61,6 +61,8 @@ Actually, the best approach is to place the `Dockerfile` in another folder and p
 ```bash
 docker build -t my-react-app:tag -f ./path/to/Dockerfile .
 ```
+This resolves an issue with the context of the build phase that requires any host files to be copied into the image to be referenced by their absolute paths. 
+Since this is not always feasible, run the build process from the directory where the files are already. Relative paths collapse to the local context (as if the relative part is not even there!).
 
 This will create the Docker image with the tag `my-react-app`.
 
@@ -79,3 +81,8 @@ Open a browser and navigate to `http://localhost`, and you should see your React
 ### Notes:
 - Make sure your `npm run build` step is correctly building your app before you try to serve it with Nginx.
 - The Nginx step uses the static build output of your React app, which is usually located in the `build` folder after running `npm run build`.
+
+### 6. Misc
+Reminder about using `docker`:
+- Add more tags to existing image: `docker image tag my-username/my-image another-username/another-image:v1`
+- Push to dockerhub: `docker push my-username/my-image:tag`
