@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import CryptoJS from 'crypto-js';
+import JSZip from 'jszip';
 
 function App() {
   // State variables for each input
   const [email, setEmail] = useState('');
   const [grav_size, setNumber] = useState('');
   const [images, setImages] = useState([]); // State for images
+  const [content, setContent] = useState(''); // Content to save in the file
 
   // Generator options
   const generators = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
@@ -29,6 +31,19 @@ function App() {
     setImages([]);
   };
   
+  // Function to handle saving the file
+  const saveFile = () => {
+    const blob = new Blob([content], { type: 'text/plain' }); // Create a Blob
+    const url = URL.createObjectURL(blob); // Generate a URL for the Blob
+
+    const link = document.createElement('a'); // Create an <a> element
+    link.href = url;
+    link.download = 'myfile.txt'; // Set the file name
+    document.body.appendChild(link);
+    link.click(); // Trigger the download
+    document.body.removeChild(link); // Remove the link after download
+    URL.revokeObjectURL(url); // Clean up the URL
+  };
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 max-w-md mx-auto mt-10">
@@ -95,6 +110,24 @@ function App() {
             />
           ))}
         </div>
+      </div>
+      
+      {/* Save button */}
+      <div className="flex flex-col items-center space-y-4 p-4 max-w-md mx-auto mt-10">
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Enter content to save"
+          rows="5"
+          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ></textarea>
+
+        <button
+          onClick={saveFile}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Save File
+        </button>
       </div>
 
     </div>
