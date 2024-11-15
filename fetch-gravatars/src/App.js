@@ -7,7 +7,6 @@ function App() {
   const [email, setEmail] = useState('');
   const [grav_size, setNumber] = useState('');
   const [images, setImages] = useState([]); // State for images
-  const [content, setContent] = useState(''); // Content to save in the file
 
   // Generator options
   const generators = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
@@ -31,18 +30,32 @@ function App() {
     setImages([]);
   };
   
-  // Function to handle saving the file
-  const saveFile = () => {
-    const blob = new Blob([content], { type: 'text/plain' }); // Create a Blob
-    const url = URL.createObjectURL(blob); // Generate a URL for the Blob
+  // Save images to a ZIP file
+  const saveImages = async () => {
+    if (images.length === 0) {
+      alert("No images to save!");
+      return;
+    }
 
-    const link = document.createElement('a'); // Create an <a> element
+    const zip = new JSZip();
+
+    for (let i = 0; i < images.length; i++) {
+      const response = await fetch(images[i]); // Fetch the image
+      const blob = await response.blob(); // Convert response to Blob
+      zip.file(`image${i + 1}.jpg`, blob); // Add image to the ZIP
+    }
+
+    const content = await zip.generateAsync({ type: "blob" }); // Generate ZIP file
+    const url = URL.createObjectURL(content);
+
+    // Create a download link
+    const link = document.createElement("a");
     link.href = url;
-    link.download = 'myfile.txt'; // Set the file name
+    link.download = "gravatars.zip"; // File name for the ZIP
     document.body.appendChild(link);
-    link.click(); // Trigger the download
-    document.body.removeChild(link); // Remove the link after download
-    URL.revokeObjectURL(url); // Clean up the URL
+    link.click(); // Trigger download
+    document.body.removeChild(link); // Clean up
+    URL.revokeObjectURL(url); // Free up memory
   };
 
   return (
@@ -95,6 +108,12 @@ function App() {
         >
           Clear Previews
         </button>
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+          onClick={saveImages}
+        >
+          Save Images
+        </button>
       </div>
 
       {/* Image Preview Section */}
@@ -111,25 +130,6 @@ function App() {
           ))}
         </div>
       </div>
-      
-      {/* Save button */}
-      <div className="flex flex-col items-center space-y-4 p-4 max-w-md mx-auto mt-10">
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Enter content to save"
-          rows="5"
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        ></textarea>
-
-        <button
-          onClick={saveFile}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-        >
-          Save File
-        </button>
-      </div>
-
     </div>
   );
 }
