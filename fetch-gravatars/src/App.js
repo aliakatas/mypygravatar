@@ -8,6 +8,9 @@ function App() {
   const [text, setText] = useState('');
   const [images, setImages] = useState([]); // State for images
 
+  // Generator options
+  const generators = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
+
   // Generate Gravatar URLs based on email and size
   const generateGravatarURL = () => {
     if (!email || !grav_size) return;
@@ -15,9 +18,11 @@ function App() {
     // Use MD5 hash for Gravatar URLs (for simplicity, using a fixed example hash)
     const hash = CryptoJS.SHA256( email );
     const size = grav_size || 100;
-    const url = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=identicon`;
-
-    setImages((prevImages) => [...prevImages, url]); // Add new URL to the images list
+    
+    generators.forEach(function (gen, index) {
+      const url = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=${gen}`;
+      setImages((prevImages) => [...prevImages, url]); // Add new URL to the images list
+    });
   };
 
   // Clear all images
