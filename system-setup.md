@@ -43,7 +43,7 @@ code .
 
 2. **Install Tailwind and required dependencies**:
     ```bash
-    npm install -D tailwindcss postcss autoprefixer crypto-js
+    npm install -D tailwindcss postcss autoprefixer crypto-js jszip
     ```
     Apparently, there is a potential vulnerability warning. The output recommends to run the following to fix:
     ```bash
