@@ -8,6 +8,7 @@ function App() {
   const [grav_size, setNumber] = useState('');
   const [images, setImages] = useState([]); // State for images
   const [images_names, setImagesNames] = useState([]); // State for the name of the images
+  const [selectedOptions, setSelectedOptions] = useState([]); // State to track selected options
 
   // Generator options
   const generators = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
