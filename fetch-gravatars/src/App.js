@@ -12,6 +12,18 @@ function App() {
   // Generator options
   const generators = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
 
+  // Modify email addresses to make them suitable as filenames
+  function sanitizeEmailForFileName(email) {
+    if (!email) return "untitled";
+  
+    // Remove or replace invalid characters for file names
+    return email
+      .toLowerCase() // Convert to lowercase for consistency
+      .replace(/[^a-z0-9@.]/g, "_") // Replace invalid characters with underscores
+      .replace(/@/g, "_at_") // Replace '@' with '_at_' for readability
+      .replace(/\./g, "_dot_"); // Replace '.' with '_dot_' for readability
+  }
+
   // Generate Gravatar URLs based on email and size
   const generateGravatarURL = () => {
     if (!email || !grav_size) return;
@@ -22,7 +34,7 @@ function App() {
     
     generators.forEach(function (gen, index) {
       const url = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=${gen}`;
-      const imgname = `${email}_${gen}`;
+      const imgname = `${sanitizeEmailForFileName(email)}_${gen}`;
 
       setImages((prevImages) => [...prevImages, url]); // Add new URL to the images list
       setImagesNames((prevImagesNames) => [...prevImagesNames, imgname]); // Add new image name to the list
@@ -56,7 +68,7 @@ function App() {
     // Create a download link
     const link = document.createElement("a");
     link.href = url;
-    link.download = "gravatars.zip"; // File name for the ZIP
+    link.download = `${sanitizeEmailForFileName(email)}_gravatars.zip`; // File name for the ZIP
     document.body.appendChild(link);
     link.click(); // Trigger download
     document.body.removeChild(link); // Clean up
