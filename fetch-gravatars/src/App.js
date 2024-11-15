@@ -5,7 +5,6 @@ function App() {
   // State variables for each input
   const [email, setEmail] = useState('');
   const [grav_size, setNumber] = useState('');
-  const [text, setText] = useState('');
   const [images, setImages] = useState([]); // State for images
 
   // Generator options
@@ -64,20 +63,6 @@ function App() {
           value={grav_size}
           onChange={(e) => setNumber(e.target.value)}
           placeholder="Enter size"
-        />
-      </div>
-
-      {/* String Input */}
-      <div className="w-full">
-        <label className="block text-gray-700 text-sm font-bold mb-2">
-          String Input
-        </label>
-        <input
-          type="text"
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Enter text"
         />
       </div>
 
