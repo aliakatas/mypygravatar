@@ -7,6 +7,7 @@ function App() {
   const [email, setEmail] = useState('');
   const [grav_size, setNumber] = useState('');
   const [images, setImages] = useState([]); // State for images
+  const [images_names, setImagesNames] = useState([]); // State for the name of the images
 
   // Generator options
   const generators = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
@@ -21,13 +22,17 @@ function App() {
     
     generators.forEach(function (gen, index) {
       const url = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=${gen}`;
+      const imgname = `${email}_${gen}`;
+
       setImages((prevImages) => [...prevImages, url]); // Add new URL to the images list
+      setImagesNames((prevImagesNames) => [...prevImagesNames, imgname]); // Add new image name to the list
     });
   };
 
   // Clear all images
   const clearImages = () => {
     setImages([]);
+    setImagesNames([]);
   };
   
   // Save images to a ZIP file
@@ -42,7 +47,7 @@ function App() {
     for (let i = 0; i < images.length; i++) {
       const response = await fetch(images[i]); // Fetch the image
       const blob = await response.blob(); // Convert response to Blob
-      zip.file(`image${i + 1}.jpg`, blob); // Add image to the ZIP
+      zip.file(`${images_names[i]}.jpg`, blob); // Add image to the ZIP
     }
 
     const content = await zip.generateAsync({ type: "blob" }); // Generate ZIP file
