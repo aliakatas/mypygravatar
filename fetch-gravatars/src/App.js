@@ -76,7 +76,7 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-4 max-w-md mx-auto mt-10">
+    <div className="flex flex-col items-center space-y-4 p-4 max-w-md mx-auto mt-10 bg-gray-100">
       <div className="text-center bg-blue-500 text-white p-6">
         <h1 className="text-4xl font-bold">Preview my Gravatars!</h1>
       </div>
