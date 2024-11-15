@@ -33,7 +33,7 @@ function App() {
     const hash = CryptoJS.SHA256( email );
     const size = grav_size || 100;
     
-    generators.forEach(function (gen, index) {
+    selectedOptions.forEach(function (gen, index) {
       const url = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=${gen}`;
       const imgname = `${sanitizeEmailForFileName(email)}_${gen}`;
 
@@ -76,6 +76,20 @@ function App() {
     URL.revokeObjectURL(url); // Free up memory
   };
 
+  // Handle checkbox toggle
+  const handleCheckboxChange = (option) => {
+    setSelectedOptions((prevSelected) => {
+      if (prevSelected.includes(option)) {
+        // If the option is already selected, remove it
+        const updated = prevSelected.filter((item) => item !== option);
+        return updated.length > 0 ? updated : prevSelected; // Ensure at least one remains
+      } else {
+        // Otherwise, add the option
+        return [...prevSelected, option];
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col items-center space-y-4 p-4 max-w-md mx-auto mt-10 bg-gray-100">
       <div className="text-center bg-blue-500 text-white p-6">
@@ -110,6 +124,25 @@ function App() {
           onChange={(e) => setNumber(e.target.value)}
           placeholder="Enter size"
         />
+      </div>
+
+      {/* Render the checkboxes */}
+      <div className="space-y-2">
+        <h4 className="text-2xl font-semibold">Select generators</h4>
+        {generators.map((option) => (
+          <div key={option} className="flex items-center">
+            <input
+              type="checkbox"
+              id={option}
+              checked={selectedOptions.includes(option)}
+              onChange={() => handleCheckboxChange(option)}
+              className="w-4 h-4 text-blue-500 border-gray-300 focus:ring-blue-400"
+            />
+            <label htmlFor={option} className="ml-2 text-gray-700">
+              {option}
+            </label>
+          </div>
+        ))}
       </div>
 
       {/* Buttons Section */}
