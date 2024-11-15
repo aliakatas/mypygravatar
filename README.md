@@ -10,3 +10,5 @@ App preview:
 ![landing-page](./images/app-preview.png)
 
 ![example-usage](./images/app-preview-with-gravatars.png)
+
+Based on [repo](https://github.com/aliakatas/mypygravatar).
