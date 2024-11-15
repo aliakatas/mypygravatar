@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import CryptoJS from 'crypto-js';
+import JSZip from 'jszip';
 
 function App() {
   // State variables for each input
   const [email, setEmail] = useState('');
   const [grav_size, setNumber] = useState('');
   const [images, setImages] = useState([]); // State for images
+  const [images_names, setImagesNames] = useState([]); // State for the name of the images
 
   // Generator options
   const generators = ["identicon", "monsterid", "wavatar", "retro", "robohash"];
+
+  // Modify email addresses to make them suitable as filenames
+  function sanitizeEmailForFileName(email) {
+    if (!email) return "untitled";
+  
+    // Remove or replace invalid characters for file names
+    return email
+      .toLowerCase() // Convert to lowercase for consistency
+      .replace(/[^a-z0-9@.]/g, "_") // Replace invalid characters with underscores
+      .replace(/@/g, "_at_") // Replace '@' with '_at_' for readability
+      .replace(/\./g, "_dot_"); // Replace '.' with '_dot_' for readability
+  }
 
   // Generate Gravatar URLs based on email and size
   const generateGravatarURL = () => {
@@ -20,15 +34,46 @@ function App() {
     
     generators.forEach(function (gen, index) {
       const url = `https://www.gravatar.com/avatar/${hash}?s=${size}&d=${gen}`;
+      const imgname = `${sanitizeEmailForFileName(email)}_${gen}`;
+
       setImages((prevImages) => [...prevImages, url]); // Add new URL to the images list
+      setImagesNames((prevImagesNames) => [...prevImagesNames, imgname]); // Add new image name to the list
     });
   };
 
   // Clear all images
   const clearImages = () => {
     setImages([]);
+    setImagesNames([]);
   };
   
+  // Save images to a ZIP file
+  const saveImages = async () => {
+    if (images.length === 0) {
+      alert("No images to save!");
+      return;
+    }
+
+    const zip = new JSZip();
+
+    for (let i = 0; i < images.length; i++) {
+      const response = await fetch(images[i]); // Fetch the image
+      const blob = await response.blob(); // Convert response to Blob
+      zip.file(`${images_names[i]}.jpg`, blob); // Add image to the ZIP
+    }
+
+    const content = await zip.generateAsync({ type: "blob" }); // Generate ZIP file
+    const url = URL.createObjectURL(content);
+
+    // Create a download link
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${sanitizeEmailForFileName(email)}_gravatars.zip`; // File name for the ZIP
+    document.body.appendChild(link);
+    link.click(); // Trigger download
+    document.body.removeChild(link); // Clean up
+    URL.revokeObjectURL(url); // Free up memory
+  };
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 max-w-md mx-auto mt-10">
@@ -80,6 +125,12 @@ function App() {
         >
           Clear Previews
         </button>
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+          onClick={saveImages}
+        >
+          Save Images
+        </button>
       </div>
 
       {/* Image Preview Section */}
@@ -96,7 +147,6 @@ function App() {
           ))}
         </div>
       </div>
-
     </div>
   );
 }
