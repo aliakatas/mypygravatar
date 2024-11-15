@@ -108,5 +108,3 @@ export default App;
 ```
 
 After saving the file, you should see a blue background with white, centered text when you refresh the browser.
-
-Let me know if you encounter any issues along the way!
