@@ -1,0 +1,18 @@
+FROM node:23-alpine
+
+WORKDIR /fetch-gravatars
+COPY ./fetch-gravatars ./
+
+# Optional: create package.json if it doesn't exist
+# Uncomment the line below if needed
+# RUN [ ! -f package.json ] && npm init -y || true
+RUN rm -f package*.json
+
+# Install dependencies and generate package-lock.json, but skip downloading node_modules
+RUN npm install --package-lock-only
+
+# RUN npm install react react-dom \
+#     && npm install --save-dev vite \
+#     && npm install -D tailwindcss postcss autoprefixer \
+#     && npm install --package-lock-only \
+#     && npx tailwindcss init -p
