@@ -1,0 +1,32 @@
+services:
+  gravatars:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    container_name: gravatars
+    env_file:
+      - .env
+    networks:
+      - traefik-net
+
+    labels:
+      - "traefik.enable=true"
+      # HTTP Router - redirects to HTTPS
+      - "traefik.http.routers.gravatars.entrypoints=http"
+      - "traefik.http.routers.gravatars.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.middlewares.gravatars-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.gravatars.middlewares=gravatars-https-redirect"
+      
+      - "traefik.http.routers.gravatars-secure.entrypoints=https"
+      - "traefik.http.routers.gravatars-secure.rule=Host(`${HOSTNAME}`)"
+      - "traefik.http.routers.gravatars-secure.tls=true"
+      - "traefik.http.routers.gravatars-secure.service=gravatars"
+
+      - "traefik.http.services.gravatars.loadbalancer.server.port=80"
+
+      # - "traefik.docker.network=traefik-net"
+
+networks:
+  traefik-net:
+    external: true
