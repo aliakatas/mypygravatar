@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: docker.io/aristos86/mypygravatar:latest-aarch64
     restart: unless-stopped
     container_name: gravatars
     env_file:
